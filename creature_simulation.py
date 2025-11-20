@@ -72,6 +72,38 @@ class SwimmingCreature(Creature):
         print(f"{target.name} HP is now {target.hp}")
 
 
+# ===============================
+# FireCreature Branch
+# ===============================
+
+class FireCreature(Creature):
+    def __init__(self, name, hp, attack_power, fire_level=0, temperature=0):
+        super().__init__(name, hp, attack_power)
+        self.fire_level = fire_level
+        self.temperature = temperature
+
+    def ignite(self, level):
+        """Set fire_level (0–100)"""
+        self.fire_level = max(0, min(100, level))
+        print(f"{self.name} ignites to fire level {self.fire_level}!")
+
+    def heat(self, amount):
+        """Set temperature (can boost attack)"""
+        self.temperature = amount
+        print(f"{self.name} is heated to {self.temperature}!")
+
+    def attack(self, target):
+        if not self.is_alive():
+            print(f"{self.name} cannot attack because it is defeated.")
+            return
+        bonus = int(self.attack_power * (self.fire_level/100)) + int(self.attack_power * (self.temperature/100))
+        total_damage = self.attack_power + bonus
+
+        print(f"{self.name} attacks with fire level {self.fire_level} and temperature {self.temperature} → +{bonus} fire damage!")
+        target.hp = max(0, target.hp - total_damage)
+        print(f"{target.name} HP is now {target.hp}")
+
+# main code
 if __name__ == "__main__":
     print("=== Creature Class Tests ===\n")
 
@@ -146,4 +178,17 @@ if __name__ == "__main__":
     print(f"Dummy HP should be 33 → Actual: {dummy.hp}")
     print()
     print("=== Tests Completed ===")
+    print()
+
+    print("=== FireCreature Tests ===\n")
+    flame = FireCreature("Blaze Drake", 60, 10)
+    flame.heat(30)
+    print(f"Temperature should be 30 → Actual: {flame.temperature}")
+
+    dummy = Creature("Practice Dummy", 50, 0)
+    flame.attack(dummy)
+    print(f"Dummy HP should be 40 → Actual: {dummy.hp}")
+    dummy.attack(flame)
+    print()
+    print("\n=== Tests Completed ===\n")
     print()
